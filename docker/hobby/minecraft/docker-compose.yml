@@ -13,8 +13,8 @@ services:
       INIT_MEMORY: ${INIT_MEMORY}
       MAX_MEMORY: ${MAX_MEMORY}
       JVM_XX_OPTS: ${JVM_XX_OPTS}
-      RCON_ENABLED: "true"
-      RCON_PORT: "25575"
+      RCON_ENABLED: ${RCON_ENABLED}
+      RCON_PORT: ${RCON_PORT}
       RCON_PASSWORD: ${RCON_PASSWORD}
       PLUGINS: ${PLUGINS}
       UID: "1000"
