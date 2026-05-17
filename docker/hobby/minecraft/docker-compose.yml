@@ -1,0 +1,41 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: minecraft
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: ${MC_VERSION}
+      ONLINE_MODE: "FALSE"
+      MOTD: ${MOTD}
+      INIT_MEMORY: ${INIT_MEMORY}
+      MAX_MEMORY: ${MAX_MEMORY}
+      JVM_XX_OPTS: ${JVM_XX_OPTS}
+      RCON_ENABLED: "true"
+      RCON_PORT: "25575"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+      PLUGINS: ${PLUGINS}
+      UID: "1000"
+      GID: "1000"
+    volumes:
+      - /srv/docker/hobby/minecraft/data:/data
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - /srv/docker/hobby/mysql/data:/var/lib/mysql
+    networks:
+      - server-net
+
+networks:
+  server-net:
+    external: true
