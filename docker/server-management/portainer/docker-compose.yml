@@ -1,6 +1,6 @@
 services:
   portainer:
-    image: portainer/portainer-ce:2.39.1
+    image: portainer/portainer-ce:latest
     container_name: portainer
     restart: unless-stopped
     command: --tlscert /certs/live/${DOMAIN}/fullchain.pem --tlskey /certs/live/${DOMAIN}/privkey.pem
@@ -10,3 +10,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/docker/server-management/portainer/data:/data
       - /etc/letsencrypt:/certs:ro
+    networks:
+      - server-net
+
+networks:
+  server-net:
+    external: true
