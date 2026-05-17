@@ -40,3 +40,23 @@ After Portainer is running, add each stack from this git repo:
 5. Click **Deploy the stack**
 
 Repeat for each stack under `docker/`.
+
+---
+
+## Notes
+
+### wg-easy
+
+> **Warning:** wg-easy will create its own `wg0` interface. Stop and disable any existing WireGuard (`wg0`) on the host before deploying.
+
+Generate the password hash before deploying:
+```bash
+docker run --rm ghcr.io/wg-easy/wg-easy wgpw YOUR_PASSWORD
+```
+Paste the output into `WG_PASSWORD_HASH` in the Portainer stack environment variables.
+
+Web UI runs on port `51821` — blocked by firewall by default, access via SSH tunnel:
+```bash
+ssh -i ~/.ssh/oci-ubuntu -L 51821:localhost:51821 -fN ubuntu@<server-ip>
+```
+Then open `http://localhost:51821`.
