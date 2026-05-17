@@ -1,9 +1,9 @@
 services:
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:2.39.1
     container_name: portainer
     restart: unless-stopped
-    command: --tlscert --tlscert /certs/live/${DOMAIN}/fullchain.pem --tlskey /certs/live/${DOMAIN}/privkey.pem
+    command: --tlscert /certs/live/${DOMAIN}/fullchain.pem --tlskey /certs/live/${DOMAIN}/privkey.pem
     ports:
       - "9443:9443"
     volumes:
