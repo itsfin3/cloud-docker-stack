@@ -2,7 +2,7 @@ services:
   wg-easy:
     image: ghcr.io/wg-easy/wg-easy:latest
     container_name: wg-easy
-    restart: unless-stopped
+    restart: on-failure:5
     environment:
       - WG_HOST=${WG_HOST}
       - PASSWORD_HASH=${WG_PASSWORD_HASH}

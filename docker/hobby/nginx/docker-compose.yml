@@ -2,7 +2,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: unless-stopped
+    restart: on-failure:5
     network_mode: host
     environment:
       - DOMAIN=${DOMAIN}
