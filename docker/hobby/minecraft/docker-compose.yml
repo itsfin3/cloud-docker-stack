@@ -32,7 +32,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
-      - /srv/docker/hobby/mysql/data:/var/lib/mysql
+      - /srv/docker/hobby/mysql/data/data:/var/lib/mysql
     networks:
       - server-net
 

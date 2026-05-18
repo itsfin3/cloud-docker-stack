@@ -5,9 +5,6 @@ services:
     restart: unless-stopped
     ports:
       - "9090:9090"
-    environment:
-      - SCRAPE_INTERVAL=${SCRAPE_INTERVAL}
-      - EVAL_INTERVAL=${EVAL_INTERVAL}
     volumes:
       - /srv/docker/monitoring/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ${TSDB_PATH}:/prometheus
