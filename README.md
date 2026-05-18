@@ -45,6 +45,17 @@ After Portainer is running, add each stack from this git repo:
 
 Repeat for each stack under `docker/`.
 
+### Stacks
+
+| Stack | Path | Description |
+|---|---|---|
+| portainer | `docker/server-management/portainer` | Docker management UI |
+| wg-easy | `docker/server-management/wg-easy` | WireGuard VPN + web UI |
+| grafana | `docker/monitoring/grafana` | Metrics dashboards |
+| prometheus | `docker/monitoring/prometheus` | Metrics collection (includes node-exporter, cAdvisor) |
+| minecraft | `docker/hobby/minecraft` | Minecraft Paper server + MySQL (AuthMe) |
+| nginx | `docker/hobby/nginx` | Reverse proxy + static site |
+
 ---
 
 ## Notes
