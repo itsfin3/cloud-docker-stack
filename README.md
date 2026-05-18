@@ -54,7 +54,7 @@ Repeat for each stack under `docker/`.
 | grafana | `docker/monitoring/grafana` | Metrics dashboards |
 | prometheus | `docker/monitoring/prometheus` | Metrics collection (includes node-exporter, cAdvisor) |
 | minecraft | `docker/hobby/minecraft` | Minecraft Paper server + MySQL (AuthMe) |
-| nginx | `docker/hobby/nginx` | Reverse proxy + static site |
+| nginx | `docker/hobby/nginx` | Static site + HTTPS redirect |
 
 ---
 
