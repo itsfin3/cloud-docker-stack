@@ -76,3 +76,11 @@ Web UI runs on port `51821` — blocked by firewall by default, access via SSH t
 ssh -L 51821:localhost:51821 -fN <user>@<server-ip>
 ```
 Then open `http://localhost:51821`.
+
+### prometheus
+
+Prometheus runs as UID 65534 (nobody). Create and own the data dir before deploying:
+```bash
+sudo mkdir -p /srv/docker/monitoring/prometheus/data
+sudo chown -R 65534:65534 /srv/docker/monitoring/prometheus/data
+```
