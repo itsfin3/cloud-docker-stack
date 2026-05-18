@@ -21,6 +21,7 @@ services:
       GID: "1000"
     volumes:
       - /srv/docker/hobby/minecraft/data:/data
+      - /srv/docker/hobby/minecraft/data/plugins/AuthMe/config.yml:/data/plugins/AuthMe/config.yml
 
   mysql:
     image: mysql:8
