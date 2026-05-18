@@ -1,0 +1,12 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - /srv/docker/hobby/nginx/html:/usr/share/nginx/html
+      - /srv/docker/hobby/nginx/configs:/etc/nginx/templates
+      - /etc/letsencrypt:/etc/letsencrypt:ro
