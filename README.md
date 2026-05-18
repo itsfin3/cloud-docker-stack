@@ -79,12 +79,8 @@ Then open `http://localhost:51821`.
 
 ### minecraft
 
-AuthMe config is at `docker/hobby/minecraft/plugins/AuthMe/config.yml`. After deploy, copy it to the server and set the real MySQL password:
+AuthMe config is at `docker/hobby/minecraft/data/plugins/AuthMe/config.yml` — copied to `/srv` with the rest of `docker/`. Set the real MySQL password before deploying:
 ```bash
-sudo cp docker/hobby/minecraft/plugins/AuthMe/config.yml \
-     /srv/docker/hobby/minecraft/data/plugins/AuthMe/config.yml
-
-# Then edit and set mySQLPassword to the real value
 sudo vim /srv/docker/hobby/minecraft/data/plugins/AuthMe/config.yml
 ```
 Restart Minecraft after editing.
