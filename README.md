@@ -71,12 +71,6 @@ echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.d/99-wireguard.conf
 sudo sysctl -p /etc/sysctl.d/99-wireguard.conf
 ```
 
-Generate the password hash before deploying:
-```bash
-sudo docker run --rm ghcr.io/wg-easy/wg-easy wgpw YOUR_PASSWORD
-```
-Paste the output into `WG_PASSWORD_HASH` in the Portainer stack environment variables.
-
 Web UI runs on port `51821` — blocked by firewall by default, access via SSH tunnel:
 ```bash
 ssh -L 51821:localhost:51821 -fN <user>@<server-ip>
