@@ -26,7 +26,7 @@ docker compose up -d
 
 Portainer UI is blocked by firewall — access via SSH tunnel:
 ```bash
-ssh -L 9443:localhost:9443 -fN user@<server-ip>
+ssh -L 9443:localhost:9443 -fN <user>@<server-ip>
 ```
 Then open `https://localhost:9443`.
 
@@ -61,6 +61,6 @@ Paste the output into `WG_PASSWORD_HASH` in the Portainer stack environment vari
 
 Web UI runs on port `51821` — blocked by firewall by default, access via SSH tunnel:
 ```bash
-ssh -L 51821:localhost:51821 -fN user@<server-ip>
+ssh -L 51821:localhost:51821 -fN <user>@<server-ip>
 ```
 Then open `http://localhost:51821`.
