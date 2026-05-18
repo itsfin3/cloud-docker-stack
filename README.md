@@ -19,9 +19,9 @@ sudo mv -v my-homelab-oci/docker /srv/
 cd /srv/docker/server-management/portainer
 
 # Edit .env with real values
-nano .env
+sudo vim .env
 
-docker compose up -d
+sudo docker compose up -d
 ```
 
 Portainer UI is blocked by firewall — access via SSH tunnel:
@@ -55,7 +55,7 @@ Repeat for each stack under `docker/`.
 
 Generate the password hash before deploying:
 ```bash
-docker run --rm ghcr.io/wg-easy/wg-easy wgpw YOUR_PASSWORD
+sudo docker run --rm ghcr.io/wg-easy/wg-easy wgpw YOUR_PASSWORD
 ```
 Paste the output into `WG_PASSWORD_HASH` in the Portainer stack environment variables.
 
