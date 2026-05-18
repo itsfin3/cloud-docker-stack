@@ -1,0 +1,151 @@
+DataSource:
+    backend: MYSQL
+    caching: true
+    mySQLHost: 127.0.0.1
+    mySQLPort: '3306'
+    mySQLUseSSL: false
+    mySQLCheckServerCertificate: false
+    mySQLAllowPublicKeyRetrieval: true
+    # Must match MYSQL_USER in minecraft stack .env
+    mySQLUsername: authme
+    # Must match MYSQL_PASSWORD in minecraft stack .env
+    mySQLPassword: 'changeme'
+    # Must match MYSQL_DATABASE in minecraft stack .env
+    mySQLDatabase: authme
+    mySQLTablename: authme
+    mySQLColumnId: id
+    mySQLColumnName: username
+    mySQLRealName: realname
+    mySQLColumnPassword: password
+    mySQLColumnSalt: ''
+    mySQLColumnEmail: email
+    mySQLColumnLogged: isLogged
+    mySQLColumnHasSession: hasSession
+    mySQLtotpKey: totp
+    mySQLColumnIp: ip
+    mySQLColumnLastLogin: lastlogin
+    mySQLColumnRegisterDate: regdate
+    mySQLColumnRegisterIp: regip
+    mySQLlastlocX: x
+    mySQLlastlocY: y
+    mySQLlastlocZ: z
+    mySQLlastlocWorld: world
+    mySQLlastlocYaw: yaw
+    mySQLlastlocPitch: pitch
+    mySQLPlayerUUID: ''
+    poolSize: 10
+    # Set at least 30s less than MySQL server wait_timeout
+    maxLifetime: 1800
+
+settings:
+    sessions:
+        enabled: false
+        timeout: 2
+    messagesLanguage: en
+    logLevel: FINE
+    useAsyncTasks: true
+    serverName: itsfin3 Open Server
+    restrictions:
+        allowChat: false
+        hideChat: false
+        allowCommands:
+        - /login
+        - /log
+        - /l
+        - /register
+        - /reg
+        maxRegPerIp: 1
+        minNicknameLength: 3
+        maxNicknameLength: 20
+        ForceSingleSession: true
+        SaveQuitLocation: true
+        AllowRestrictedUser: false
+        AllowedRestrictedUser: []
+        banUnsafedIP: false
+        kickNonRegistered: false
+        kickOnWrongPassword: true
+        teleportUnAuthedToSpawn: false
+        allowMovement: false
+        timeout: 60
+        allowedNicknameCharacters: '[a-zA-Z0-9_]*'
+        allowedMovementRadius: 100
+        ProtectInventoryBeforeLogIn: true
+        DenyTabCompleteBeforeLogin: false
+        displayOtherAccounts: true
+        spawnPriority: authme,essentials,cmi,multiverse,default
+        maxLoginPerIp: 0
+        maxJoinPerIp: 0
+        noTeleport: true
+        allowedPasswordCharacters: '[!-~]*'
+    GameMode:
+        ForceSurvivalMode: false
+    security:
+        minPasswordLength: 5
+        passwordMaxLength: 30
+        passwordHash: SHA256
+        legacyHashes: []
+        unsafePasswords:
+        - '123456'
+        - password
+        - qwerty
+        - '12345'
+        - '54321'
+        - '123456789'
+        - help
+    registration:
+        enabled: true
+        messageInterval: 15
+        force: true
+        type: PASSWORD
+        secondArg: CONFIRMATION
+        forceKickAfterRegister: false
+        forceLoginAfterRegister: false
+    useWelcomeMessage: true
+    broadcastWelcomeMessage: false
+    delayJoinMessage: false
+    customJoinMessage: ''
+    removeUnloggedLeaveMessage: false
+    removeJoinMessage: false
+    removeLeaveMessage: false
+    applyBlindEffect: true
+    preventOtherCase: true
+
+Hooks:
+    multiverse: true
+    bungeecord: false
+    sendPlayerTo: ''
+    disableSocialSpy: false
+    useEssentialsMotd: false
+
+Protection:
+    enableProtection: false
+    enableAntiBot: true
+    antiBotInterval: 5
+    antiBotSensibility: 10
+    antiBotDuration: 10
+    antiBotDelay: 60
+
+Security:
+    SQLProblem:
+        stopServer: true
+    console:
+        logConsole: true
+    captcha:
+        useCaptcha: true
+        maxLoginTry: 3
+        captchaLength: 5
+        captchaCountReset: 60
+        requireForRegistration: false
+    tempban:
+        enableTempban: false
+        maxLoginTries: 10
+        tempbanLength: 480
+        minutesBeforeCounterReset: 480
+        customCommand: ''
+
+limbo:
+    persistence:
+        type: INDIVIDUAL_FILES
+    restoreAllowFlight: RESTORE
+    restoreFlySpeed: RESTORE_NO_ZERO
+    restoreWalkSpeed: RESTORE_NO_ZERO
