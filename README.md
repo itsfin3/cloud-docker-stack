@@ -24,7 +24,11 @@ nano .env
 docker compose up -d
 ```
 
-Portainer will be available at `https://<your-domain>:9443`.
+Portainer UI is blocked by firewall — access via SSH tunnel:
+```bash
+ssh -L 9443:localhost:9443 -fN ubuntu@<server-ip>
+```
+Then open `https://localhost:9443`.
 
 ### 3. Re-add stacks via Portainer UI
 
@@ -57,6 +61,6 @@ Paste the output into `WG_PASSWORD_HASH` in the Portainer stack environment vari
 
 Web UI runs on port `51821` — blocked by firewall by default, access via SSH tunnel:
 ```bash
-ssh -i ~/.ssh/oci-ubuntu -L 51821:localhost:51821 -fN ubuntu@<server-ip>
+ssh -L 51821:localhost:51821 -fN ubuntu@<server-ip>
 ```
 Then open `http://localhost:51821`.
