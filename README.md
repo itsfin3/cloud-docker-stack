@@ -64,6 +64,13 @@ Repeat for each stack under `docker/`.
 
 > **Warning:** wg-easy will create its own `wg0` interface. Stop and disable any existing WireGuard (`wg0`) on the host before deploying.
 
+Before deploying, set required sysctls permanently on the host:
+```bash
+echo "net.ipv4.conf.all.src_valid_mark=1" | sudo tee -a /etc/sysctl.d/99-wireguard.conf
+echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.d/99-wireguard.conf
+sudo sysctl -p /etc/sysctl.d/99-wireguard.conf
+```
+
 Generate the password hash before deploying:
 ```bash
 sudo docker run --rm ghcr.io/wg-easy/wg-easy wgpw YOUR_PASSWORD
