@@ -14,5 +14,5 @@ STACKS=(
 for stack in "${STACKS[@]}"; do
   echo "Redeploying $stack..."
   docker compose -f "$BASE_DIR/$stack/docker-compose.yml" pull
-  docker compose -f "$BASE_DIR/$stack/docker-compose.yml" up -d
+  docker compose -f "$BASE_DIR/$stack/docker-compose.yml" up -d --force-recreate
 done
