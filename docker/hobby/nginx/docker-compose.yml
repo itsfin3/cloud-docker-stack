@@ -6,5 +6,5 @@ services:
     network_mode: host
     volumes:
       - /srv/docker/hobby/nginx/html:/usr/share/nginx/html
-      - /srv/docker/hobby/nginx/configs:/etc/nginx/templates
+      - /srv/docker/hobby/nginx/configs:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt:ro
