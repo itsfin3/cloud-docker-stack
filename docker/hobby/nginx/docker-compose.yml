@@ -8,8 +8,8 @@ services:
       - DOMAIN_1_DEFAULT=${DOMAIN_1_DEFAULT}
       - DOMAIN_2=${DOMAIN_2}
       - DOMAIN_3=${DOMAIN_3}
-      - DOMAIN_4=${DOMAIN_4}
-      - DOMAIN_5=${DOMAIN_5}
+      - DOMAIN_4_REVERSE=${DOMAIN_4_REVERSE}
+      - DOMAIN_5_REVERSE=${DOMAIN_5_REVERSE}
     volumes:
       - /srv/docker/hobby/nginx/html:/usr/share/nginx/html
       - /srv/docker/hobby/nginx/configs:/etc/nginx/templates
