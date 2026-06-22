@@ -3,7 +3,7 @@ server {
     server_name ${DOMAIN_4_REVERSE};
 
     location /.well-known/acme-challenge/ {
-        root /usr/share/nginx/html/${DOMAIN_4_REVERSE};
+        root /usr/share/nginx/html;
     }
 
     location / {

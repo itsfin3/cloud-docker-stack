@@ -3,7 +3,7 @@ server {
     server_name ${DOMAIN_3};
 
     location /.well-known/acme-challenge/ {
-        root /usr/share/nginx/html/${DOMAIN_3};
+        root /usr/share/nginx/html;
     }
 
     location / {
@@ -28,7 +28,7 @@ server {
 
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
 
-    root /usr/share/nginx/html/${DOMAIN_3};
+    root /usr/share/nginx/html;
     index index.html;
 
     location / {
