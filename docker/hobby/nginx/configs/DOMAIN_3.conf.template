@@ -1,9 +1,9 @@
 server {
-    listen 80 default_server;
-    server_name ${DOMAIN_1_DEFAULT};
+    listen 80;
+    server_name ${DOMAIN_3};
 
     location /.well-known/acme-challenge/ {
-        root /usr/share/nginx/html/${DOMAIN_1_DEFAULT};
+        root /usr/share/nginx/html/${DOMAIN_3};
     }
 
     location / {
@@ -12,11 +12,11 @@ server {
 }
 
 server {
-    listen 443 ssl http2 default_server;
-    server_name ${DOMAIN_1_DEFAULT};
+    listen 443 ssl http2;
+    server_name ${DOMAIN_3};
 
-    ssl_certificate     /etc/letsencrypt/live/${DOMAIN_1_DEFAULT}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_1_DEFAULT}/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN_3}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_3}/privkey.pem;
 
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256;
@@ -27,10 +27,11 @@ server {
 
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
 
-    root /usr/share/nginx/html/${DOMAIN_1_DEFAULT};
+    root /usr/share/nginx/html/${DOMAIN_3};
     index index.html;
 
     location / {
         try_files $uri $uri/ =404;
     }
 }
+
