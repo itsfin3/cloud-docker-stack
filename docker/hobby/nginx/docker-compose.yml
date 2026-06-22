@@ -4,7 +4,13 @@ services:
     container_name: nginx
     restart: on-failure:5
     network_mode: host
+    environment:
+      - DOMAIN_1=${DOMAIN_1}
+      - DOMAIN_2=${DOMAIN_2}
+      - DOMAIN_3=${DOMAIN_3}
+      - DOMAIN_4=${DOMAIN_4}
+      - DOMAIN_5=${DOMAIN_5}
     volumes:
       - /srv/docker/hobby/nginx/html:/usr/share/nginx/html
-      - /srv/docker/hobby/nginx/configs:/etc/nginx/conf.d
+      - /srv/docker/hobby/nginx/configs:/etc/nginx/templates
       - /etc/letsencrypt:/etc/letsencrypt:ro
