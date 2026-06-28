@@ -28,7 +28,7 @@ server {
 
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
 
-    root /usr/share/nginx/html;
+    root /usr/share/nginx/html/${DOMAIN_1_DEFAULT};
     index index.html;
 
     location / {
