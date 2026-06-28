@@ -13,9 +13,7 @@ services:
       - WG_ALLOWED_IPS=20.20.0.0/24
     volumes:
       - /srv/docker/hobby/wg-easy/data:/etc/wireguard
-    ports:
-      - "51822:51822/udp"
-      - "51823:51823/tcp"
+    network_mode: host
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
