@@ -17,5 +17,3 @@ services:
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
-    sysctls:
-      - net.ipv4.ip_forward=1
