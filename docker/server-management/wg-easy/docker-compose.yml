@@ -7,7 +7,7 @@ services:
       - WG_HOST=${WG_HOST}
       - PASSWORD_HASH=${WG_PASSWORD_HASH}
       - WG_PORT=51820
-      - PORT=51821
+      - PORT=51823
       - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
     volumes:
