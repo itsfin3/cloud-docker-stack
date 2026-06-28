@@ -11,6 +11,7 @@ services:
       - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
       - WG_ALLOWED_IPS=20.20.0.0/24
+      - WG_DEVICE=wg1
     volumes:
       - /srv/docker/hobby/wg-easy/data:/etc/wireguard
     network_mode: host

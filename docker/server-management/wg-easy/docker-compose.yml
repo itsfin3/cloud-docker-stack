@@ -12,6 +12,7 @@ services:
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
       - WG_PERSISTENT_KEEPALIVE=25
       - WG_ALLOWED_IPS=10.10.0.0/24
+      - WG_DEVICE=wg0
     volumes:
       - /srv/docker/server-management/wg-easy/data:/etc/wireguard
     network_mode: host
