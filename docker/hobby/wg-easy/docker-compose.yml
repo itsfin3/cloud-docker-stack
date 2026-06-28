@@ -8,6 +8,7 @@ services:
       - PASSWORD_HASH=${WG_PASSWORD_HASH}
       - WG_PORT=51822
       - PORT=51823
+      - WG_INTERFACE=wg1
       - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
     volumes:
