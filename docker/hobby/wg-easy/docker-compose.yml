@@ -10,6 +10,7 @@ services:
       - PORT=51823
       - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
+      - WG_ALLOWED_IPS=20.20.0.0/24
     volumes:
       - /srv/docker/hobby/wg-easy/data:/etc/wireguard
     ports:
