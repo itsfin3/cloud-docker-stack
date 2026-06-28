@@ -1,9 +1,26 @@
 services:
+  certbot:
+    image: certbot/certbot
+    network_mode: host
+    environment:
+      - DOMAIN_1_DEFAULT=${DOMAIN_1_DEFAULT}
+      - DOMAIN_2=${DOMAIN_2}
+      - DOMAIN_3=${DOMAIN_3}
+      - DOMAIN_4_REVERSE=${DOMAIN_4_REVERSE}
+      - DOMAIN_5_REVERSE=${DOMAIN_5_REVERSE}
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./certbot-init.sh:/certbot-init.sh:ro
+    entrypoint: ["/bin/sh", "/certbot-init.sh"]
+
   nginx:
     image: nginx:latest
     container_name: nginx
     restart: on-failure:5
     network_mode: host
+    depends_on:
+      certbot:
+        condition: service_completed_successfully
     environment:
       - DOMAIN_1_DEFAULT=${DOMAIN_1_DEFAULT}
       - DOMAIN_2=${DOMAIN_2}
