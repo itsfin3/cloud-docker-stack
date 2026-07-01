@@ -12,7 +12,7 @@ services:
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
       - WG_ALLOWED_IPS=20.20.0.0/24
       - WG_PERSISTENT_KEEPALIVE=25
-      - WG_POST_UP=iptables -I INPUT -i wg0 -s 20.20.0.2 -d 20.20.0.1 -j ACCEPT; iptables -I INPUT -i wg0 -d 20.20.0.1 -j DROP
+      - WG_POST_UP=iptables -I INPUT -i wg0 -d 20.20.0.1 -j DROP; iptables -I INPUT -i wg0 -s 20.20.0.2 -d 20.20.0.1 -j ACCEPT
       - WG_PRE_DOWN=iptables -D INPUT -i wg0 -s 20.20.0.2 -d 20.20.0.1 -j ACCEPT; iptables -D INPUT -i wg0 -d 20.20.0.1 -j DROP
     volumes:
       - /srv/docker/hobby/wg-easy/data:/etc/wireguard
