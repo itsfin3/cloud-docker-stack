@@ -1,0 +1,33 @@
+services:
+  wg-easy-public:
+    image: ghcr.io/wg-easy/wg-easy:latest
+    container_name: wg-easy-public
+    restart: on-failure:5
+    environment:
+      - WG_HOST=${WG_HOST}
+      - PASSWORD_HASH=${WG_PASSWORD_HASH}
+      - WG_PORT=51824
+      - PORT=51825
+      - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
+      - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
+      - WG_ALLOWED_IPS=0.0.0.0/0, ::/0
+      - WG_PERSISTENT_KEEPALIVE=25
+      - WG_POST_UP=iptables -I INPUT -i wg0 -d 30.30.0.1 -j DROP; iptables -I INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT
+      - WG_PRE_DOWN=iptables -D INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT; iptables -D INPUT -i wg0 -d 30.30.0.1 -j DROP
+    volumes:
+      - /srv/docker/hobby/wg-easy-public/data:/etc/wireguard
+    ports:
+      - "51824:51824/udp"
+      - "51825:51825/tcp"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      - wg-hobby-public
+
+networks:
+  wg-hobby-public:
+    driver: bridge
