@@ -16,7 +16,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    restart: on-failure:5
+    restart: unless-stopped
     network_mode: host
     depends_on:
       certbot:

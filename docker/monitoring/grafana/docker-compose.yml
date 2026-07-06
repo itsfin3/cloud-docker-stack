@@ -2,7 +2,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    restart: on-failure:5
+    restart: unless-stopped
     user: "root"
     ports:
       - "3000:3000"

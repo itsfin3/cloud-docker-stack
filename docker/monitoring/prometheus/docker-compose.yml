@@ -2,7 +2,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    restart: on-failure:5
+    restart: unless-stopped
     ports:
       - "9090:9090"
     volumes:
@@ -18,7 +18,7 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
-    restart: on-failure:5
+    restart: unless-stopped
     pid: host
     volumes:
       - /proc:/host/proc:ro
@@ -34,7 +34,7 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
-    restart: on-failure:5
+    restart: unless-stopped
     privileged: true
     volumes:
       - /:/rootfs:ro

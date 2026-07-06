@@ -2,7 +2,7 @@ services:
   minecraft:
     image: itzg/minecraft-server:latest
     container_name: minecraft
-    restart: on-failure:5
+    restart: unless-stopped
     network_mode: host
     environment:
       EULA: "TRUE"
@@ -26,7 +26,7 @@ services:
   mysql:
     image: mysql:8
     container_name: mysql
-    restart: on-failure:5
+    restart: unless-stopped
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_USER: ${MYSQL_USER}

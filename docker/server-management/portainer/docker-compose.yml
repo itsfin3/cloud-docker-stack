@@ -2,7 +2,7 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
-    restart: on-failure:5
+    restart: unless-stopped
     command: --tlscert /certs/live/${DOMAIN}/fullchain.pem --tlskey /certs/live/${DOMAIN}/privkey.pem
     ports:
       - "9443:9443"
