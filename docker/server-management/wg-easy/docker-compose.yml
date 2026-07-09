@@ -14,7 +14,15 @@ services:
       - WG_ALLOWED_IPS=10.10.0.0/24
     volumes:
       - /srv/docker/server-management/wg-easy/data:/etc/wireguard
-    network_mode: host
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    networks:
+      - server-net
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
+
+networks:
+  server-net:
+    external: true
