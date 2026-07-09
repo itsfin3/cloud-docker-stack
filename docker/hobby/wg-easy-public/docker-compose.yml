@@ -12,8 +12,8 @@ services:
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
       - WG_ALLOWED_IPS=0.0.0.0/0, ::/0
       - WG_PERSISTENT_KEEPALIVE=25
-      - WG_POST_UP=iptables -I INPUT -i wg0 -d 30.30.0.1 -j DROP; iptables -I INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT
-      - WG_PRE_DOWN=iptables -D INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT; iptables -D INPUT -i wg0 -d 30.30.0.1 -j DROP
+      - WG_POST_UP=iptables -t nat -A POSTROUTING -s 30.30.0.0/24 -o eth0 -j MASQUERADE; iptables -A FORWARD -i wg0 -o wg0 -j DROP; iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -I INPUT -i wg0 -d 30.30.0.1 -j DROP; iptables -I INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT
+      - WG_PRE_DOWN=iptables -D INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT; iptables -D INPUT -i wg0 -d 30.30.0.1 -j DROP; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -o wg0 -j DROP; iptables -t nat -D POSTROUTING -s 30.30.0.0/24 -o eth0 -j MASQUERADE
     volumes:
       - /srv/docker/hobby/wg-easy-public/data:/etc/wireguard
     ports:
