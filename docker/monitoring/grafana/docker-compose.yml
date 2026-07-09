@@ -4,8 +4,6 @@ services:
     container_name: grafana
     restart: unless-stopped
     user: "root"
-    ports:
-      - "3000:3000"
     environment:
       GF_SERVER_PROTOCOL: https
       GF_SERVER_CERT_FILE: /certs/live/${DOMAIN}/fullchain.pem

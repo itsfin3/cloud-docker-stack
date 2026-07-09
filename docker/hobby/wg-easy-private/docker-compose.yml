@@ -18,7 +18,7 @@ services:
       - /srv/docker/hobby/wg-easy/data:/etc/wireguard
     ports:
       - "51822:51822/udp"
-      - "51823:51823/tcp"
+      - "127.0.0.1:51823:51823/tcp"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
