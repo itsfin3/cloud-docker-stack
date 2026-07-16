@@ -1,6 +1,6 @@
 services:
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ee:latest
     container_name: portainer
     restart: unless-stopped
     command: --tlscert /certs/live/${DOMAIN}/fullchain.pem --tlskey /certs/live/${DOMAIN}/privkey.pem
