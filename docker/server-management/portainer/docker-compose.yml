@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     command: --tlscert /certs/live/${DOMAIN}/fullchain.pem --tlskey /certs/live/${DOMAIN}/privkey.pem
     ports:
-      - "10.10.0.1:9443:9443"
+      - "${VPN_BIND_IP}:${PORTAINER_PORT}:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/docker/server-management/portainer/data:/data

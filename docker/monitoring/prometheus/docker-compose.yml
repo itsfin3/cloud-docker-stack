@@ -4,7 +4,7 @@ services:
     container_name: prometheus
     restart: unless-stopped
     ports:
-      - "10.10.0.1:9090:9090"
+      - "${VPN_BIND_IP}:${PROMETHEUS_PORT}:9090"
     volumes:
       - /srv/docker/monitoring/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ${TSDB_PATH}:/prometheus
