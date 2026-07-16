@@ -1,4 +1,4 @@
-# my-homelab-oci
+# cloud-docker-stack
 
 Scripts, configs, files for my always free tier instance in OCI.
 
@@ -9,8 +9,8 @@ Scripts, configs, files for my always free tier instance in OCI.
 ### 1. Clone and move to /srv
 
 ```bash
-git clone git@github.com:itsfin3/my-homelab-oci.git
-sudo mv -v my-homelab-oci/docker /srv/
+git clone git@github.com:itsfin3/cloud-docker-stack.git
+sudo mv -v cloud-docker-stack/docker /srv/
 ```
 
 ### 2. Deploy Portainer
@@ -37,7 +37,7 @@ After Portainer is running, add each stack from this git repo:
 1. Open Portainer → **Stacks** → **Add stack**
 2. Select **Repository**
 3. Fill in:
-   - **Repository URL:** `https://github.com/itsfin3/my-homelab-oci`
+   - **Repository URL:** `https://github.com/itsfin3/cloud-docker-stack`
    - **Repository reference:** `refs/heads/main`
    - **Compose path:** e.g. `docker/server-management/grafana/docker-compose.yml`
 4. Scroll to **Environment variables** → add values from the stack's `.env` file
