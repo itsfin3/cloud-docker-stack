@@ -6,19 +6,19 @@ services:
     environment:
       - WG_HOST=${WG_HOST}
       - PASSWORD_HASH=${WG_PASSWORD_HASH}
-      - WG_PORT=51824
-      - PORT=51825
+      - WG_PORT=${WG_PORT}
+      - PORT=${WG_UI_PORT}
       - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
-      - WG_ALLOWED_IPS=0.0.0.0/0, ::/0
-      - WG_PERSISTENT_KEEPALIVE=25
-      - WG_POST_UP=iptables -t nat -A POSTROUTING -s 30.30.0.0/24 -o eth0 -j MASQUERADE; iptables -A FORWARD -i wg0 -o wg0 -j DROP; iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -I INPUT -i wg0 -d 30.30.0.1 -j DROP; iptables -I INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT
-      - WG_PRE_DOWN=iptables -D INPUT -i wg0 -s 30.30.0.2 -d 30.30.0.1 -j ACCEPT; iptables -D INPUT -i wg0 -d 30.30.0.1 -j DROP; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -o wg0 -j DROP; iptables -t nat -D POSTROUTING -s 30.30.0.0/24 -o eth0 -j MASQUERADE
+      - WG_ALLOWED_IPS=${WG_ALLOWED_IPS}
+      - WG_PERSISTENT_KEEPALIVE=${WG_PERSISTENT_KEEPALIVE}
+      - WG_POST_UP=iptables -t nat -A POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE; iptables -A FORWARD -i wg0 -o wg0 -j DROP; iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -I INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP; iptables -I INPUT -i wg0 -s ${WG_OWNER_IP} -d ${WG_GATEWAY_IP} -j ACCEPT
+      - WG_PRE_DOWN=iptables -D INPUT -i wg0 -s ${WG_OWNER_IP} -d ${WG_GATEWAY_IP} -j ACCEPT; iptables -D INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -o wg0 -j DROP; iptables -t nat -D POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE
     volumes:
       - /srv/docker/hobby/wg-easy-public/data:/etc/wireguard
     ports:
-      - "51824:51824/udp"
-      - "127.0.0.1:51825:51825/tcp"
+      - "${WG_PORT}:${WG_PORT}/udp"
+      - "127.0.0.1:${WG_UI_PORT}:${WG_UI_PORT}/tcp"
     cap_add:
       - NET_ADMIN
     sysctls:
