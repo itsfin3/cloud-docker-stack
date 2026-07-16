@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     user: "root"
     ports:
-      - "${VPN_BIND_IP}:${GRAFANA_PORT}:3000"
+      - "${BIND_IP}:${GRAFANA_PORT}:3000"
     environment:
       GF_SERVER_PROTOCOL: https
       GF_SERVER_CERT_FILE: /certs/live/${DOMAIN}/fullchain.pem
