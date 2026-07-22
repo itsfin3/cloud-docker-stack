@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       WG_HOST: ${WG_HOST}
-      PASSWORD_HASH: ${WG_PASSWORD_HASH}
+      PASSWORD_HASH: ${PASSWORD_HASH}
       WG_PORT: ${WG_PORT}
       PORT: ${WG_UI_PORT}
       WG_DEFAULT_ADDRESS: ${WG_DEFAULT_ADDRESS}
