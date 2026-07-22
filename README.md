@@ -24,11 +24,11 @@ sudo vim .env
 sudo docker compose up -d
 ```
 
-Portainer (and prometheus, grafana) are published on `10.10.0.1` — the main wg-easy VPN's own tunnel address — not `0.0.0.0`. This only works once wg-easy is deployed and its `wg0` interface exists on the host.
+Portainer (and prometheus, grafana) are published on `10.10.0.1` — the main wg-main VPN's own tunnel address — not `0.0.0.0`. This only works once wg-main is deployed and its `wg0` interface exists on the host.
 
-**Bootstrap order matters on a fresh install:** deploy `wg-easy` (step 3, host network mode) *before* portainer, prometheus, or grafana will bind successfully — otherwise their `ports:` publish fails at container start with `cannot assign requested address` (retries automatically via `restart: unless-stopped` once wg0 comes up, but faster to just deploy wg-easy first).
+**Bootstrap order matters on a fresh install:** deploy `wg-main` (step 3, host network mode) *before* portainer, prometheus, or grafana will bind successfully — otherwise their `ports:` publish fails at container start with `cannot assign requested address` (retries automatically via `restart: unless-stopped` once wg0 comes up, but faster to just deploy wg-main first).
 
-Once wg-easy is up and you're connected to the VPN, open `https://10.10.0.1:9443` for Portainer.
+Once wg-main is up and you're connected to the VPN, open `https://10.10.0.1:9443` for Portainer.
 
 ### 3. Re-add stacks via Portainer UI
 
@@ -52,7 +52,7 @@ Repeat for each stack under `docker/`.
 | Stack | Path | Description |
 |---|---|---|
 | portainer | `docker/server-management/portainer` | Docker management UI |
-| wg-easy | `docker/server-management/wg-easy` | WireGuard VPN + web UI |
+| wg-main | `docker/server-management/wg-easy` | WireGuard VPN + web UI |
 | grafana | `docker/monitoring/grafana` | Metrics dashboards |
 | prometheus | `docker/monitoring/prometheus` | Metrics collection (includes node-exporter, cAdvisor) |
 | minecraft | `docker/hobby/minecraft` | Minecraft Paper server + MySQL (AuthMe) |
@@ -62,9 +62,9 @@ Repeat for each stack under `docker/`.
 
 ## Notes
 
-### wg-easy
+### wg-main
 
-> **Warning:** wg-easy will create its own `wg0` interface. Stop and disable any existing WireGuard (`wg0`) on the host before deploying.
+> **Warning:** wg-main will create its own `wg0` interface. Stop and disable any existing WireGuard (`wg0`) on the host before deploying.
 
 Before deploying, set required sysctls permanently on the host:
 ```bash
@@ -79,7 +79,7 @@ ssh -L 51821:localhost:51821 -fN <user>@<server-ip>
 ```
 Then open `http://localhost:51821`.
 
-Same pattern for the hobby VPNs: `wg-easy-hobby` UI on `51823`, `wg-easy-public` UI on `51825`, both `127.0.0.1`-bound — tunnel to those ports the same way. Their VPN data ports (`51822`/udp, `51824`/udp) stay published on `0.0.0.0` since that's the actual tunnel traffic clients need to reach.
+Same pattern for the hobby VPNs: `wg-hobby-private` UI on `51823`, `wg-hobby-public` UI on `51825`, both `127.0.0.1`-bound — tunnel to those ports the same way. Their VPN data ports (`51822`/udp, `51824`/udp) stay published on `0.0.0.0` since that's the actual tunnel traffic clients need to reach.
 
 ### Networking / firewall gotcha
 
@@ -88,7 +88,7 @@ Docker's own iptables rules (nat `DOCKER` chain DNAT + filter `FORWARD` chain AC
 When adding a new stack, decide access scope deliberately and bind accordingly:
 - Public-facing (e.g. minecraft, nginx 80/443): `"PORT:PORT"` is fine.
 - Host-only (e.g. mysql, admin UIs before VPN existed): `"127.0.0.1:PORT:PORT"`.
-- VPN-only (portainer, prometheus, grafana currently): `"10.10.0.1:PORT:PORT"` — reachable only from the host itself or clients connected through the main wg-easy VPN, since `10.10.0.1` is that VPN's own tunnel address on the host (requires wg-easy running in `network_mode: host`, see bootstrap-order note above).
+- VPN-only (portainer, prometheus, grafana currently): `"10.10.0.1:PORT:PORT"` — reachable only from the host itself or clients connected through the main wg-main VPN, since `10.10.0.1` is that VPN's own tunnel address on the host (requires wg-main running in `network_mode: host`, see bootstrap-order note above).
 
 ### minecraft
 

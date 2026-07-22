@@ -1,0 +1,31 @@
+services:
+  dns-relay:
+    image: 4km3/dnsmasq:latest
+    container_name: dns-relay
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /srv/docker/server-management/dns-relay/dnsmasq.conf:/etc/dnsmasq.conf:ro
+    # Joined to every network that has containers wg-main's clients should be
+    # able to resolve by name - each container_name becomes a DNS name for
+    # free via the embedded resolver relay (see dnsmasq.conf), no static
+    # hostname list to maintain. Only wg-hobby-private carries a pinned IP:
+    # that's the one address wg-main's WG_DEFAULT_DNS points clients at, so
+    # it needs to be a known constant. The others just need membership.
+    networks:
+      server-net:
+      wg-hobby-private:
+        ipv4_address: ${DNS_RELAY_BRIDGE_IP}
+      wg-hobby-public:
+      plus-infra-net:
+
+networks:
+  server-net:
+    external: true
+  wg-hobby-private:
+    external: true
+  wg-hobby-public:
+    external: true
+  plus-infra-net:
+    external: true

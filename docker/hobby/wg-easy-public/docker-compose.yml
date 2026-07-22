@@ -1,19 +1,48 @@
 services:
-  wg-easy-public:
+  wg-hobby-public:
     image: ghcr.io/wg-easy/wg-easy:latest
-    container_name: wg-easy-public
+    container_name: wg-hobby-public
     restart: unless-stopped
     environment:
-      - WG_HOST=${WG_HOST}
-      - PASSWORD_HASH=${WG_PASSWORD_HASH}
-      - WG_PORT=${WG_PORT}
-      - PORT=${WG_UI_PORT}
-      - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
-      - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
-      - WG_ALLOWED_IPS=${WG_ALLOWED_IPS}
-      - WG_PERSISTENT_KEEPALIVE=${WG_PERSISTENT_KEEPALIVE}
-      - WG_POST_UP=iptables -t nat -A POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE; iptables -A FORWARD -i wg0 -o wg0 -j DROP; iptables -A FORWARD -i wg0 -d 10.10.0.0/24 -j DROP; iptables -A FORWARD -i wg0 -d 20.20.0.0/24 -j DROP; iptables -A FORWARD -i wg0 -d 127.0.0.0/8 -j DROP; iptables -A FORWARD -i wg0 -d 10.0.0.0/8 -j DROP; iptables -A FORWARD -i wg0 -d 172.16.0.0/12 -j DROP; iptables -A FORWARD -i wg0 -d 192.168.0.0/16 -j DROP; iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -I INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP; iptables -I INPUT -i wg0 -s ${WG_UI_ACCESS_IP} -d ${WG_GATEWAY_IP} -j ACCEPT
-      - WG_PRE_DOWN=iptables -D INPUT -i wg0 -s ${WG_UI_ACCESS_IP} -d ${WG_GATEWAY_IP} -j ACCEPT; iptables -D INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -i wg0 -d 192.168.0.0/16 -j DROP; iptables -D FORWARD -i wg0 -d 172.16.0.0/12 -j DROP; iptables -D FORWARD -i wg0 -d 10.0.0.0/8 -j DROP; iptables -D FORWARD -i wg0 -d 127.0.0.0/8 -j DROP; iptables -D FORWARD -i wg0 -d 20.20.0.0/24 -j DROP; iptables -D FORWARD -i wg0 -d 10.10.0.0/24 -j DROP; iptables -D FORWARD -i wg0 -o wg0 -j DROP; iptables -t nat -D POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE
+      WG_HOST: ${WG_HOST}
+      PASSWORD_HASH: ${WG_PASSWORD_HASH}
+      WG_PORT: ${WG_PORT}
+      PORT: ${WG_UI_PORT}
+      WG_DEFAULT_ADDRESS: ${WG_DEFAULT_ADDRESS}
+      WG_DEFAULT_DNS: ${WG_DEFAULT_DNS}
+      WG_ALLOWED_IPS: ${WG_ALLOWED_IPS}
+      WG_PERSISTENT_KEEPALIVE: ${WG_PERSISTENT_KEEPALIVE}
+      # ${WG_MAIN_BRIDGE_IP} exception inserted at chain head (-I, not -A) so
+      # it's evaluated before the blanket ${RFC1918_172} drop below - see
+      # matching comment in wg-hobby-private's docker-compose.yml.
+      WG_POST_UP: >-
+        iptables -I FORWARD 1 -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT;
+        iptables -t nat -A POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE;
+        iptables -A FORWARD -i wg0 -o wg0 -j DROP;
+        iptables -A FORWARD -i wg0 -d ${MAIN_VPN_SUBNET} -j DROP;
+        iptables -A FORWARD -i wg0 -d ${HOBBY_PRIVATE_SUBNET} -j DROP;
+        iptables -A FORWARD -i wg0 -d ${RFC1918_LOOPBACK} -j DROP;
+        iptables -A FORWARD -i wg0 -d ${RFC1918_10} -j DROP;
+        iptables -A FORWARD -i wg0 -d ${RFC1918_172} -j DROP;
+        iptables -A FORWARD -i wg0 -d ${RFC1918_192} -j DROP;
+        iptables -A FORWARD -i wg0 -j ACCEPT;
+        iptables -A FORWARD -o wg0 -j ACCEPT;
+        iptables -I INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP;
+        iptables -I INPUT -i wg0 -s ${WG_UI_ACCESS_IP} -d ${WG_GATEWAY_IP} -j ACCEPT
+      WG_PRE_DOWN: >-
+        iptables -D INPUT -i wg0 -s ${WG_UI_ACCESS_IP} -d ${WG_GATEWAY_IP} -j ACCEPT;
+        iptables -D INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP;
+        iptables -D FORWARD -o wg0 -j ACCEPT;
+        iptables -D FORWARD -i wg0 -j ACCEPT;
+        iptables -D FORWARD -i wg0 -d ${RFC1918_192} -j DROP;
+        iptables -D FORWARD -i wg0 -d ${RFC1918_172} -j DROP;
+        iptables -D FORWARD -i wg0 -d ${RFC1918_10} -j DROP;
+        iptables -D FORWARD -i wg0 -d ${RFC1918_LOOPBACK} -j DROP;
+        iptables -D FORWARD -i wg0 -d ${HOBBY_PRIVATE_SUBNET} -j DROP;
+        iptables -D FORWARD -i wg0 -d ${MAIN_VPN_SUBNET} -j DROP;
+        iptables -D FORWARD -i wg0 -o wg0 -j DROP;
+        iptables -t nat -D POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE;
+        iptables -D FORWARD -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT
     volumes:
       - /srv/docker/hobby/wg-easy-public/data:/etc/wireguard
     ports:
@@ -25,8 +54,13 @@ services:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
     networks:
-      - wg-hobby-public
+      wg-hobby-public:
+        ipv4_address: ${WG_SELF_BRIDGE_IP}
 
 networks:
   wg-hobby-public:
+    name: wg-hobby-public
     driver: bridge
+    ipam:
+      config:
+        - subnet: ${WG_HOBBY_PUBLIC_BRIDGE_CIDR}

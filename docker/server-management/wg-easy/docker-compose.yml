@@ -1,20 +1,64 @@
 services:
-  wg-easy:
+  wg-main:
     image: ghcr.io/wg-easy/wg-easy:latest
-    container_name: wg-easy
+    container_name: wg-main
     restart: unless-stopped
     environment:
-      - WG_HOST=${WG_HOST}
-      - PASSWORD_HASH=${WG_PASSWORD_HASH}
-      - WG_PORT=${WG_PORT}
-      - PORT=${WG_UI_PORT}
-      - WG_DEFAULT_ADDRESS=${WG_DEFAULT_ADDRESS}
-      - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
-      - WG_PERSISTENT_KEEPALIVE=${WG_PERSISTENT_KEEPALIVE}
-      - WG_ALLOWED_IPS=${WG_ALLOWED_IPS}
+      WG_HOST: ${WG_HOST}
+      PASSWORD_HASH: ${WG_PASSWORD_HASH}
+      WG_PORT: ${WG_PORT}
+      PORT: ${WG_UI_PORT}
+      WG_DEFAULT_ADDRESS: ${WG_DEFAULT_ADDRESS}
+      WG_DEFAULT_DNS: ${WG_DEFAULT_DNS}
+      WG_PERSISTENT_KEEPALIVE: ${WG_PERSISTENT_KEEPALIVE}
+      WG_ALLOWED_IPS: ${WG_ALLOWED_IPS}
+      # No longer network_mode: host, so no implicit host-wide forwarding -
+      # this replaces that with: base forward for wg-main's own tunnel,
+      # source-scoped MASQUERADE (covers server-net + the 3 routed subnets
+      # below uniformly, so return traffic finds its way back regardless of
+      # destination), and one static route per isolated bridge target (each
+      # one's own VPN client range lives only inside that container's
+      # private wg0, invisible on the shared bridge, so it can't be reached
+      # without an explicit next-hop route).
+      WG_POST_UP: >-
+        iptables -A FORWARD -i wg0 -j ACCEPT;
+        iptables -A FORWARD -o wg0 -j ACCEPT;
+        iptables -t nat -A POSTROUTING -s ${WG_OWN_SUBNET} -j MASQUERADE;
+        ip route add ${HOBBY_PRIVATE_SUBNET} via ${WG_HOBBY_PRIVATE_BRIDGE_IP};
+        ip route add ${HOBBY_PUBLIC_SUBNET} via ${WG_HOBBY_PUBLIC_BRIDGE_IP};
+        ip route add ${PLUS_VPN_SUBNET} via ${WG_PLUS_BRIDGE_IP}
+      WG_PRE_DOWN: >-
+        ip route del ${PLUS_VPN_SUBNET} via ${WG_PLUS_BRIDGE_IP};
+        ip route del ${HOBBY_PUBLIC_SUBNET} via ${WG_HOBBY_PUBLIC_BRIDGE_IP};
+        ip route del ${HOBBY_PRIVATE_SUBNET} via ${WG_HOBBY_PRIVATE_BRIDGE_IP};
+        iptables -t nat -D POSTROUTING -s ${WG_OWN_SUBNET} -j MASQUERADE;
+        iptables -D FORWARD -o wg0 -j ACCEPT;
+        iptables -D FORWARD -i wg0 -j ACCEPT
     volumes:
       - /srv/docker/server-management/wg-easy/data:/etc/wireguard
-    network_mode: host
+    ports:
+      - "${WG_PORT}:${WG_PORT}/udp"
+      - "127.0.0.1:${WG_UI_PORT}:${WG_UI_PORT}/tcp"
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      server-net:
+      wg-hobby-private:
+        ipv4_address: ${WG_HOBBY_PRIVATE_BRIDGE_IP}
+      wg-hobby-public:
+        ipv4_address: ${WG_HOBBY_PUBLIC_BRIDGE_IP}
+      plus-infra-net:
+        ipv4_address: ${WG_PLUS_BRIDGE_IP}
+
+networks:
+  server-net:
+    external: true
+  wg-hobby-private:
+    external: true
+  wg-hobby-public:
+    external: true
+  plus-infra-net:
+    external: true
