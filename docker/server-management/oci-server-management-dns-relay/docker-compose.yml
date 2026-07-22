@@ -5,8 +5,24 @@ services:
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
-    volumes:
-      - /srv/docker/server-management/oci-server-management-dns-relay/dnsmasq.conf:/etc/dnsmasq.conf:ro
+    # Config as command args, not a mounted dnsmasq.conf - keeps this stack
+    # self-contained in git (no /srv sync-by-hand step, no drift risk).
+    # no-negcache: without it, a failed/empty lookup at boot (127.0.0.11 not
+    # fully live for all 4 networks yet) gets cached as a negative answer and
+    # stays broken until the container is restarted - container names should
+    # always be resolved live anyway (dynamic IPs).
+    # bind-interfaces: multi-homed (4 bridge networks) - without it, replies
+    # can go out with the wrong source IP (picked by default route, not the
+    # interface the query arrived on), and clients silently drop a reply
+    # that doesn't match who they queried.
+    command:
+      - --no-resolv
+      - --no-hosts
+      - --server=127.0.0.11
+      - --server=1.1.1.1
+      - --listen-address=0.0.0.0
+      - --no-negcache
+      - --bind-interfaces
     # Joined to every network that has containers wg-main's clients should be
     # able to resolve by name - each container_name becomes a DNS name for
     # free via the embedded resolver relay (see dnsmasq.conf), no static
