@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>itsfin3 | VPN Gateway</title>
+  <link rel="icon" type="image/gif" href="files/favicon.gif">
+  <style>
+    :root {
+      --bg:         #14181c;
+      --panel-bg:   #1d2226;
+      --panel-hdr:  #262c31;
+      --border:     #000;
+      --accent:     #7cd4ff;
+      --green:      #3ddc84;
+      --red:        #ff5c5c;
+      --amber:      #ffb648;
+      --text-dim:   #8a97a0;
+      --text:       #e6edf1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Consolas', 'SF Mono', 'Menlo', monospace;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, #1a2b3a 0%, #14181c 100%);
+      padding: 48px 20px 40px;
+      text-align: center;
+      border-bottom: 4px solid #000;
+    }
+
+    .hero-title {
+      font-size: clamp(22px, 5vw, 40px);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .hero-sub { color: var(--text-dim); font-size: 13px; }
+
+    .status-pill {
+      margin-top: 28px;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,0,0,0.5);
+      border: 2px solid #333;
+      padding: 5px 14px; font-size: 13px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); animation: blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 14px 40px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .panel {
+      border: 2px solid #000;
+      box-shadow: inset -2px -3px 0 #0a0d0f, inset 2px 2px 0 #333a40;
+      overflow: hidden;
+    }
+    .panel-hdr {
+      background: var(--panel-hdr);
+      border-bottom: 2px solid #000;
+      padding: 8px 12px; font-size: 13px;
+      color: var(--text);
+      display: flex; align-items: center; justify-content: space-between; gap: 7px;
+    }
+    .panel-hdr-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); }
+    .panel-body { background: var(--panel-bg); padding: 14px 16px; }
+
+    .stat {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0; border-bottom: 1px solid #2a3136;
+      font-size: 13px; gap: 10px;
+    }
+    .stat:last-child { border-bottom: none; }
+    .stat-lbl { color: var(--text-dim); flex-shrink: 0; }
+    .stat-val { color: var(--accent); text-align: right; }
+
+    table.clients { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
+    table.clients th {
+      text-align: left; color: var(--text-dim); font-weight: normal;
+      padding: 6px 8px; border-bottom: 1px solid #2a3136; font-size: 11px;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    table.clients td { padding: 6px 8px; border-bottom: 1px solid #23282c; }
+    table.clients tr:last-child td { border-bottom: none; }
+    .client-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .client-dot.on  { background: var(--green); }
+    .client-dot.off { background: #4a4a4a; }
+    .client-status { display: flex; align-items: center; gap: 6px; }
+    .client-disabled { color: #55606a; font-style: italic; }
+    .addr { color: var(--text-dim); }
+
+    .steps { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .step  {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: #20262b; border: 1px solid #2a3136;
+      padding: 9px 12px; font-size: 12px;
+    }
+    .step-num {
+      background: #2a3f52; color: #fff;
+      min-width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; flex-shrink: 0;
+      border: 1px solid #000;
+    }
+    .step-txt { color: #bfc9d1; line-height: 1.6; }
+    .step-txt strong { color: var(--accent); }
+    .step-txt a { color: var(--accent); }
+
+    .note {
+      background: #26210f; border: 1px solid #4a3f1a; color: #d9c896;
+      padding: 9px 12px; font-size: 12px; line-height: 1.6; margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #2a3138; color: #fff;
+      text-decoration: none;
+      padding: 8px 16px; border: 1px solid #000;
+      font-family: inherit; font-size: 12px;
+      cursor: pointer; white-space: nowrap;
+      transition: filter .1s;
+    }
+    .btn:hover { filter: brightness(1.3); }
+    .btn.b { background: #2a4e8a; }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; justify-content: center; }
+
+    .dl-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #20262b; border: 1px solid #2a3136; color: var(--accent);
+      text-decoration: none; padding: 3px 9px; font-size: 11px; white-space: nowrap;
+    }
+    .dl-btn:hover { background: #262d33; }
+
+    .updated { text-align: center; font-size: 10.5px; color: #555; margin-top: 4px; padding-bottom: 18px; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-title">itsfin3 VPN Gateway</div>
+  <div class="hero-sub">WireGuard access — status refreshes automatically</div>
+</div>
+
+<div class="content">
+
+  <div class="panel" id="panel-hobby">
+    <div class="panel-hdr">
+      <span>Private VPN</span>
+      <span class="panel-hdr-status"><span class="dot" id="hobby-dot" style="width:8px;height:8px;"></span><span id="hobby-status-txt">—</span></span>
+    </div>
+    <div class="panel-body">
+      <div class="stat"><span class="stat-lbl">Subnet</span><span class="stat-val" id="hobby-subnet">—</span></div>
+      <div class="stat"><span class="stat-lbl">Peers connected</span><span class="stat-val" id="hobby-connected">—</span></div>
+      <table class="clients"><thead><tr><th>Device</th><th>Address</th><th>Location</th><th>Status</th><th></th></tr></thead>
+        <tbody id="hobby-clients"></tbody>
+      </table>
+      <div class="note">
+        <strong>What this VPN does:</strong> it only connects member devices to each other directly (like a private LAN), for things like local game hosting. It does <strong>not</strong> route or proxy your general internet traffic — your regular browsing still goes out your normal connection.
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-public">
+    <div class="panel-hdr">
+      <span>Public VPN</span>
+      <span class="panel-hdr-status"><span class="dot" id="public-dot" style="width:8px;height:8px;"></span><span id="public-status-txt">—</span></span>
+    </div>
+    <div class="panel-body">
+      <div class="stat"><span class="stat-lbl">Exit IP</span><span class="stat-val" id="public-exit-ip">—</span></div>
+      <div class="stat"><span class="stat-lbl">Peers connected</span><span class="stat-val" id="public-connected">—</span></div>
+      <table class="clients"><thead><tr><th>Device</th><th>Status</th><th></th></tr></thead>
+        <tbody id="public-clients"></tbody>
+      </table>
+      <div class="note">
+        <strong>What this VPN does:</strong> unlike the Private VPN, this tunnel routes <strong>all</strong> of your device's internet traffic through this server — your browsing exits to the internet using this server's public IP (<strong>Exit IP</strong> above, fetched live) instead of your own. Useful for a fixed egress IP or routing around local network restrictions. Peers on this VPN cannot see or reach each other.
+      </div>
+      <div class="stat"><span class="stat-lbl">DNS</span><span class="stat-val">Cloudflare, via DNS-over-HTTPS</span></div>
+      <div class="note">
+        <strong>DNS is encrypted end-to-end on this server's side:</strong> your device's DNS queries are forwarded to Cloudflare over HTTPS (DoH) rather than sent as plaintext — so anyone watching this server's own egress traffic can't read which domains you're looking up, only the (encrypted) HTTPS connection to Cloudflare.
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hdr"><span>Instruction</span></div>
+    <div class="panel-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-txt">Install the official <strong>WireGuard</strong> app for your device: <a href="https://www.wireguard.com/install/" target="_blank">wireguard.com/install</a></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-txt">Click <strong>Download</strong> next to your device above, then import the <strong>.conf</strong> file into the app (or scan its QR code if your app supports it).</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-txt">Activate the tunnel. On the <strong>Private VPN</strong>, test connectivity by pinging another connected device's VPN address (e.g. <strong>20.20.0.x</strong>) — if it replies, you're in. On the <strong>Public VPN</strong>, just check that your internet still works — you're now exiting through the server's IP.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-txt">Check back here — your device should flip to <strong>connected</strong> within a minute of activating the tunnel.</div>
+        </div>
+      </div>
+      <div class="note">
+        <strong>No handshake?</strong> Some OS firewalls/antivirus block WireGuard's UDP traffic by default — try temporarily disabling the firewall on your device to confirm before troubleshooting further.
+      </div>
+      <div class="btn-row">
+        <a class="btn b" href="https://discord.gg/xkUFPaFJhz" target="_blank">Discord</a>
+        <a class="btn b" href="https://t.me/+9XUzdYPhYoQ1NzUy" target="_blank">Telegram</a>
+        <a class="btn" href="https://t.me/itsfin3" target="_blank">Contact</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="updated" id="last-updated"></div>
+
+<script>
+  function fmtAgo(sec) {
+    if (sec === null || sec === undefined) return 'never';
+    if (sec < 60) return sec + 's ago';
+    if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+    if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+    return Math.floor(sec/86400) + 'd ago';
+  }
+
+  const CONFIG_DIRS = { hobby: 'configs', public: 'configs-public' };
+  const SHOW_ADDR = { hobby: true, public: false };
+  const SHOW_GEO = { hobby: true, public: false };
+
+  function ccToFlag(cc) {
+    if (!cc || cc.length !== 2) return '';
+    return String.fromCodePoint(...[...cc.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
+  }
+
+  function renderVpn(prefix, vpn) {
+    const dot = document.getElementById(prefix + '-dot');
+    const statusTxt = document.getElementById(prefix + '-status-txt');
+    const subnetEl = document.getElementById(prefix + '-subnet');
+    if (subnetEl) subnetEl.textContent = vpn.subnet;
+
+    if (!vpn.up) {
+      dot.style.background = 'var(--red)'; dot.style.animation = 'none';
+      statusTxt.textContent = 'Offline';
+      document.getElementById(prefix + '-connected').textContent = '—';
+      document.getElementById(prefix + '-clients').innerHTML = '';
+      return;
+    }
+
+    dot.style.background = 'var(--green)'; dot.style.animation = 'blink 1.4s infinite';
+    statusTxt.textContent = 'Online';
+
+    const enabled = vpn.clients.filter(c => c.enabled);
+    const connectedCount = enabled.filter(c => c.connected).length;
+    document.getElementById(prefix + '-connected').textContent = connectedCount + ' / ' + enabled.length;
+
+    const configDir = CONFIG_DIRS[prefix] || 'configs';
+    const showAddr = SHOW_ADDR[prefix] !== false;
+    const showGeo = SHOW_GEO[prefix] === true;
+    const tbody = document.getElementById(prefix + '-clients');
+    tbody.innerHTML = enabled.map(c => {
+      const geo = c.connected && c.geo ? `${ccToFlag(c.geo.countryCode)} ${c.geo.city}` : '—';
+      return `
+      <tr>
+        <td>${c.name}</td>
+        ${showAddr ? `<td class="addr">${c.address}</td>` : ''}
+        ${showGeo ? `<td>${geo}</td>` : ''}
+        <td><span class="client-status"><span class="client-dot ${c.connected ? 'on' : 'off'}"></span>${c.connected ? 'connected' : fmtAgo(c.last_handshake_sec)}</span></td>
+        <td><a class="dl-btn" href="${configDir}/${encodeURIComponent(c.name)}.conf" download>⬇ Download</a></td>
+      </tr>
+    `;
+    }).join('');
+  }
+
+  async function fetchStatus() {
+    try {
+      const data = await fetch('/status.json?_=' + Date.now()).then(r => r.json());
+      const vpnById = Object.fromEntries(data.vpns.map(v => [v.id, v]));
+      renderVpn('hobby', vpnById.hobby);
+      renderVpn('public', vpnById.public);
+      document.getElementById('public-exit-ip').textContent = data.server_ip || '—';
+
+      const d = new Date(data.generated_at);
+      document.getElementById('last-updated').textContent = 'Last updated: ' + d.toLocaleTimeString();
+    } catch (e) {}
+  }
+
+  fetchStatus();
+  setInterval(fetchStatus, 15000);
+</script>
+</body>
+</html>
