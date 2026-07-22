@@ -15,7 +15,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: oci-hobby-nginx
     restart: unless-stopped
     network_mode: host
     depends_on:
@@ -31,6 +31,6 @@ services:
       - DOMAIN_5_REVERSE=${DOMAIN_5_REVERSE}
       - DOMAIN_5_UPSTREAM=${DOMAIN_5_UPSTREAM}
     volumes:
-      - /srv/docker/hobby/nginx/html:/usr/share/nginx/html
-      - /srv/docker/hobby/nginx/configs:/etc/nginx/templates
+      - /srv/docker/hobby/oci-hobby-nginx/html:/usr/share/nginx/html
+      - /srv/docker/hobby/oci-hobby-nginx/configs:/etc/nginx/templates
       - /etc/letsencrypt:/etc/letsencrypt:ro

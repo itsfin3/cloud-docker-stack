@@ -1,7 +1,7 @@
 services:
-  wg-hobby-private:
+  oci-hobby-wg-private:
     image: ghcr.io/wg-easy/wg-easy:latest
-    container_name: wg-hobby-private
+    container_name: oci-hobby-wg-private
     restart: unless-stopped
     environment:
       WG_HOST: ${WG_HOST}
@@ -39,7 +39,7 @@ services:
         iptables -D FORWARD -i wg0 -d ${MAIN_VPN_SUBNET} -j DROP;
         iptables -D FORWARD -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT
     volumes:
-      - /srv/docker/hobby/wg-hobby-private/data:/etc/wireguard
+      - /srv/docker/hobby/oci-hobby-wg-private/data:/etc/wireguard
     ports:
       - "${WG_PORT}:${WG_PORT}/udp"
       - "127.0.0.1:${WG_UI_PORT}:${WG_UI_PORT}/tcp"
@@ -49,12 +49,12 @@ services:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
     networks:
-      wg-hobby-private:
+      oci-hobby-wg-private:
         ipv4_address: ${WG_SELF_BRIDGE_IP}
 
 networks:
-  wg-hobby-private:
-    name: wg-hobby-private
+  oci-hobby-wg-private:
+    name: oci-hobby-wg-private
     driver: bridge
     ipam:
       config:
