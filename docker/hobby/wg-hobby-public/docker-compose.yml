@@ -44,7 +44,7 @@ services:
         iptables -t nat -D POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE;
         iptables -D FORWARD -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT
     volumes:
-      - /srv/docker/hobby/wg-easy-public/data:/etc/wireguard
+      - /srv/docker/hobby/wg-hobby-public/data:/etc/wireguard
     ports:
       - "${WG_PORT}:${WG_PORT}/udp"
       - "127.0.0.1:${WG_UI_PORT}:${WG_UI_PORT}/tcp"

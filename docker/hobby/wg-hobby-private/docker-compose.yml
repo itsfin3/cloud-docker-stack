@@ -39,7 +39,7 @@ services:
         iptables -D FORWARD -i wg0 -d ${MAIN_VPN_SUBNET} -j DROP;
         iptables -D FORWARD -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT
     volumes:
-      - /srv/docker/hobby/wg-easy/data:/etc/wireguard
+      - /srv/docker/hobby/wg-hobby-private/data:/etc/wireguard
     ports:
       - "${WG_PORT}:${WG_PORT}/udp"
       - "127.0.0.1:${WG_UI_PORT}:${WG_UI_PORT}/tcp"
