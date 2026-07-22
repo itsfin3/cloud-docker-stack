@@ -177,12 +177,16 @@
     </div>
     <div class="panel-body">
       <div class="stat"><span class="stat-lbl">Exit IP</span><span class="stat-val" id="public-exit-ip">—</span></div>
+      <div class="stat"><span class="stat-lbl">DNS</span><span class="stat-val">Cloudflare, via DNS-over-TLS</span></div>
       <div class="stat"><span class="stat-lbl">Peers connected</span><span class="stat-val" id="public-connected">—</span></div>
       <table class="clients"><thead><tr><th>Device</th><th>Status</th><th></th></tr></thead>
         <tbody id="public-clients"></tbody>
       </table>
       <div class="note">
         <strong>What this VPN does:</strong> unlike the Private VPN, this tunnel routes <strong>all</strong> of your device's internet traffic through this server — your browsing exits to the internet using this server's public IP (<strong>Exit IP</strong> above, fetched live) instead of your own. Useful for a fixed egress IP or routing around local network restrictions. Peers on this VPN cannot see or reach each other.
+      </div>
+      <div class="note">
+        <strong>DNS is encrypted on this server's side:</strong> your device's DNS queries are forwarded to Cloudflare over DNS-over-TLS rather than sent as plaintext — so anyone watching this server's own egress traffic can't read which domains you're looking up, only that an encrypted connection to Cloudflare's DNS service is happening.
       </div>
     </div>
   </div>
