@@ -15,9 +15,17 @@ services:
       # ${WG_MAIN_BRIDGE_IP} exception inserted at chain head (-I, not -A) so
       # it's evaluated before the blanket ${RFC1918_172} drop below - see
       # matching comment in wg-hobby-private's docker-compose.yml.
+      #
+      # Second POSTROUTING rule (-o wg0): traffic forwarded in here from
+      # wg-main has a source address this tunnel's own clients have no
+      # route for - see matching comment in wg-hobby-private's
+      # docker-compose.yml. Separate rule from the -o eth0 one above
+      # (that one's for this tunnel's own clients egressing to the
+      # internet, unrelated direction/purpose).
       WG_POST_UP: >-
         iptables -I FORWARD 1 -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT;
         iptables -t nat -A POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE;
+        iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE;
         iptables -A FORWARD -i wg0 -o wg0 -j DROP;
         iptables -A FORWARD -i wg0 -d ${MAIN_VPN_SUBNET} -j DROP;
         iptables -A FORWARD -i wg0 -d ${HOBBY_PRIVATE_SUBNET} -j DROP;
@@ -41,6 +49,7 @@ services:
         iptables -D FORWARD -i wg0 -d ${HOBBY_PRIVATE_SUBNET} -j DROP;
         iptables -D FORWARD -i wg0 -d ${MAIN_VPN_SUBNET} -j DROP;
         iptables -D FORWARD -i wg0 -o wg0 -j DROP;
+        iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE;
         iptables -t nat -D POSTROUTING -s ${WG_SUBNET} -o eth0 -j MASQUERADE;
         iptables -D FORWARD -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT
     volumes:

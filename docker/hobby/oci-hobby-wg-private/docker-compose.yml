@@ -18,6 +18,14 @@ services:
       # this network, since docker-assigned bridge IPs live in that same
       # RFC1918 block. This only un-blocks return traffic addressed to
       # wg-main specifically, nothing else.
+      #
+      # POSTROUTING MASQUERADE on wg0: traffic forwarded in here from
+      # wg-main (source is a 172.x bridge IP) has a source address this
+      # tunnel's own clients have no route for - they only know WG_SUBNET
+      # (+ pushed AllowedIPs). Without this, the client's reply has nowhere
+      # to go and is dropped locally: request arrives, response never comes
+      # back. Rewriting source to WG_GATEWAY_IP (in-subnet, always known)
+      # fixes that; conntrack un-NATs the reply back to the real requester.
       WG_POST_UP: >-
         iptables -I FORWARD 1 -i wg0 -d ${WG_MAIN_BRIDGE_IP} -j ACCEPT;
         iptables -A FORWARD -i wg0 -d ${MAIN_VPN_SUBNET} -j DROP;
@@ -27,8 +35,10 @@ services:
         iptables -A FORWARD -i wg0 -d ${RFC1918_172} -j DROP;
         iptables -A FORWARD -i wg0 -d ${RFC1918_192} -j DROP;
         iptables -I INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP;
-        iptables -I INPUT -i wg0 -s ${WG_UI_ACCESS_IP} -d ${WG_GATEWAY_IP} -j ACCEPT
+        iptables -I INPUT -i wg0 -s ${WG_UI_ACCESS_IP} -d ${WG_GATEWAY_IP} -j ACCEPT;
+        iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
       WG_PRE_DOWN: >-
+        iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE;
         iptables -D INPUT -i wg0 -s ${WG_UI_ACCESS_IP} -d ${WG_GATEWAY_IP} -j ACCEPT;
         iptables -D INPUT -i wg0 -d ${WG_GATEWAY_IP} -j DROP;
         iptables -D FORWARD -i wg0 -d ${RFC1918_192} -j DROP;
