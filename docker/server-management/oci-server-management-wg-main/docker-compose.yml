@@ -24,13 +24,13 @@ services:
         iptables -A FORWARD -i wg0 -j ACCEPT;
         iptables -A FORWARD -o wg0 -j ACCEPT;
         iptables -t nat -A POSTROUTING -s ${WG_OWN_SUBNET} -j MASQUERADE;
-        ip route add ${HOBBY_PRIVATE_SUBNET} via ${WG_HOBBY_PRIVATE_BRIDGE_IP};
-        ip route add ${HOBBY_PUBLIC_SUBNET} via ${WG_HOBBY_PUBLIC_BRIDGE_IP};
-        ip route add ${PLUS_VPN_SUBNET} via ${WG_PLUS_BRIDGE_IP}
+        ip route add ${HOBBY_PRIVATE_SUBNET} via ${WG_HOBBY_PRIVATE_TARGET_IP};
+        ip route add ${HOBBY_PUBLIC_SUBNET} via ${WG_HOBBY_PUBLIC_TARGET_IP};
+        ip route add ${PLUS_VPN_SUBNET} via ${WG_PLUS_TARGET_IP}
       WG_PRE_DOWN: >-
-        ip route del ${PLUS_VPN_SUBNET} via ${WG_PLUS_BRIDGE_IP};
-        ip route del ${HOBBY_PUBLIC_SUBNET} via ${WG_HOBBY_PUBLIC_BRIDGE_IP};
-        ip route del ${HOBBY_PRIVATE_SUBNET} via ${WG_HOBBY_PRIVATE_BRIDGE_IP};
+        ip route del ${PLUS_VPN_SUBNET} via ${WG_PLUS_TARGET_IP};
+        ip route del ${HOBBY_PUBLIC_SUBNET} via ${WG_HOBBY_PUBLIC_TARGET_IP};
+        ip route del ${HOBBY_PRIVATE_SUBNET} via ${WG_HOBBY_PRIVATE_TARGET_IP};
         iptables -t nat -D POSTROUTING -s ${WG_OWN_SUBNET} -j MASQUERADE;
         iptables -D FORWARD -o wg0 -j ACCEPT;
         iptables -D FORWARD -i wg0 -j ACCEPT
