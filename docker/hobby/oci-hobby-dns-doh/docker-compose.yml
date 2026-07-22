@@ -1,0 +1,25 @@
+services:
+  oci-hobby-dns-doh:
+    image: cloudflare/cloudflared:latest
+    container_name: oci-hobby-dns-doh
+    restart: unless-stopped
+    # DNS-over-HTTPS forwarder for wg-hobby-public specifically - this is
+    # the full-tunnel exit VPN (all client internet traffic egresses via
+    # this server's public IP), so plaintext DNS queries to 1.1.1.1 over
+    # that egress path are visible to anyone snooping between here and
+    # Cloudflare. This proxies plain DNS (what WG_DEFAULT_DNS requires -
+    # it only ever takes a plain IP:port) to Cloudflare over HTTPS, so the
+    # upstream leg is encrypted even though client->this-container isn't.
+    command: >-
+      proxy-dns
+      --address 0.0.0.0
+      --port 53
+      --upstream https://1.1.1.1/dns-query
+      --upstream https://1.0.0.1/dns-query
+    networks:
+      oci-hobby-wg-public:
+        ipv4_address: ${DNS_DOH_BRIDGE_IP}
+
+networks:
+  oci-hobby-wg-public:
+    external: true
