@@ -1,7 +1,7 @@
 services:
   minecraft:
     image: itzg/minecraft-server:latest
-    container_name: minecraft
+    container_name: oci-hobby-minecraft
     restart: unless-stopped
     network_mode: host
     environment:
@@ -20,22 +20,19 @@ services:
       UID: "1000"
       GID: "1000"
     volumes:
-      - /srv/docker/hobby/minecraft/data:/data
-      - /srv/docker/hobby/minecraft/data/plugins/AuthMe/config.yml:/data/plugins/AuthMe/config.yml
+      - /srv/docker/hobby/oci-hobby-minecraft/data:/data
 
   mysql:
     image: mysql:8
-    container_name: mysql
+    container_name: oci-hobby-minecraft-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - "127.0.0.1:3306:3306"
     volumes:
-      - /srv/docker/hobby/mysql/data/data:/var/lib/mysql
+      - /srv/docker/hobby/oci-hobby-minecraft-mysql/data:/var/lib/mysql
     networks:
       - server-net
 
