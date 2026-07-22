@@ -31,6 +31,8 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "127.0.0.1:3306:3306"
     volumes:
       - /srv/docker/hobby/oci-hobby-minecraft-mysql/data:/var/lib/mysql
     networks:
