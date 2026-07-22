@@ -16,4 +16,8 @@ services:
 
 networks:
   server-net:
-    external: true
+    name: server-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${SERVER_NET_CIDR}
