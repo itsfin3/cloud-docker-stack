@@ -10,13 +10,17 @@ services:
     # Joined to every network that has containers wg-main's clients should be
     # able to resolve by name - each container_name becomes a DNS name for
     # free via the embedded resolver relay (see dnsmasq.conf), no static
-    # hostname list to maintain. Only oci-hobby-wg-private carries a pinned
-    # IP: that's the one address wg-main's WG_DEFAULT_DNS points clients at,
-    # so it needs to be a known constant. The others just need membership.
+    # hostname list to maintain. Only server-net carries a pinned IP: that's
+    # the one address wg-main's WG_DEFAULT_DNS points clients at, so it needs
+    # to be a known constant - and critically, it must fall inside wg-main's
+    # WG_ALLOWED_IPS or client OS's never route DNS queries into the tunnel
+    # at all (server-net is; the hobby-wg bridges aren't, clients only need
+    # the actual WG tunnel ranges behind those, not the bridges themselves).
+    # The other 3 networks just need membership, no pinned IP required.
     networks:
       server-net:
-      oci-hobby-wg-private:
         ipv4_address: ${DNS_RELAY_BRIDGE_IP}
+      oci-hobby-wg-private:
       oci-hobby-wg-public:
       plus-infra-net:
 
