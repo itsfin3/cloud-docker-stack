@@ -1,6 +1,8 @@
 services:
   oci-hobby-dns-encrypted:
-    image: mvance/unbound:latest
+    # mvance/unbound is amd64-only ("exec format error" on this arm64 box) -
+    # klutchell/unbound is a multi-arch fork of the same image, arm64 included.
+    image: klutchell/unbound:latest
     container_name: oci-hobby-dns-encrypted
     restart: unless-stopped
     # Encrypted-upstream DNS forwarder for wg-hobby-public specifically -
