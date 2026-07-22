@@ -1,0 +1,25 @@
+services:
+  oci-hobby-dns-encrypted:
+    image: mvance/unbound:latest
+    container_name: oci-hobby-dns-encrypted
+    restart: unless-stopped
+    # Encrypted-upstream DNS forwarder for wg-hobby-public specifically -
+    # this is the full-tunnel exit VPN (all client internet traffic
+    # egresses via this server's public IP), so plaintext DNS queries to
+    # 1.1.1.1 over that egress path are visible to anyone snooping between
+    # here and Cloudflare. unbound forwards plain DNS (what WG_DEFAULT_DNS
+    # requires - it only ever takes a plain IP:port) to Cloudflare over
+    # DoT (TLS), so the upstream leg is encrypted even though
+    # client->this-container isn't. Originally used cloudflared's
+    # `proxy-dns` for the same purpose (DoH instead of DoT) but Cloudflare
+    # removed that feature entirely as of cloudflared 2026.2.0 - unbound is
+    # a long-established resolver, not tied to one vendor's tool lifecycle.
+    volumes:
+      - /srv/docker/hobby/oci-hobby-dns-encrypted/unbound.conf:/opt/unbound/etc/unbound/unbound.conf:ro
+    networks:
+      oci-hobby-wg-public:
+        ipv4_address: ${DNS_ENCRYPTED_BRIDGE_IP}
+
+networks:
+  oci-hobby-wg-public:
+    external: true
