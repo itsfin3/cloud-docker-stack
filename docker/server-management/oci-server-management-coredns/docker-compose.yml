@@ -1,0 +1,48 @@
+services:
+  oci-server-management-coredns:
+    image: coredns/coredns:latest
+    container_name: oci-server-management-coredns
+    restart: unless-stopped
+    command: -conf /Corefile
+    # Corefile as inline compose config, not a mounted file - keeps this stack
+    # self-contained in git like the dnsmasq relay it replaces (no /srv sync
+    # step, Portainer git-linked stacks don't fetch sibling files anyway).
+    # forward target order matches the old dnsmasq --server flags: Docker's
+    # embedded resolver first (container name resolution), 1.1.1.1 fallback
+    # for public DNS. `log` gives per-query logging dnsmasq's image didn't
+    # surface - the point of this migration.
+    configs:
+      - source: corefile
+        target: /Corefile
+    # Same 4-network membership as the dnsmasq relay it replaces - only
+    # server-net carries a pinned IP (the address wg-main's WG_DEFAULT_DNS
+    # points clients at, must sit inside WG_ALLOWED_IPS). Don't run this
+    # alongside the dnsmasq relay stack with the same pinned IP - cut over
+    # one at a time via Portainer.
+    networks:
+      server-net:
+        ipv4_address: ${DNS_RELAY_BRIDGE_IP}
+      oci-hobby-wg-private:
+      oci-hobby-wg-public:
+      plus-infra-net:
+
+configs:
+  corefile:
+    content: |
+      . {
+          forward . 127.0.0.11 1.1.1.1
+          log
+          errors
+          health
+          prometheus :9153
+      }
+
+networks:
+  server-net:
+    external: true
+  oci-hobby-wg-private:
+    external: true
+  oci-hobby-wg-public:
+    external: true
+  plus-infra-net:
+    external: true
