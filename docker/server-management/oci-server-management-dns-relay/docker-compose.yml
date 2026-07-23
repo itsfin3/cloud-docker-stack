@@ -23,6 +23,8 @@ services:
       - --listen-address=0.0.0.0
       - --no-negcache
       - --bind-interfaces
+      - --log-queries
+      - --log-facility=-
     # Joined to every network that has containers wg-main's clients should be
     # able to resolve by name - each container_name becomes a DNS name for
     # free via the embedded resolver relay (see dnsmasq.conf), no static
