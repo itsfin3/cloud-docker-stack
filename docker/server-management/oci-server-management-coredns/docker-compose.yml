@@ -8,8 +8,9 @@ services:
     # self-contained in git like the dnsmasq relay it replaces (no /srv sync
     # step, Portainer git-linked stacks don't fetch sibling files anyway).
     # forward target order matches the old dnsmasq --server flags: Docker's
-    # embedded resolver first (container name resolution), 1.1.1.1 fallback
-    # for public DNS. `log` gives per-query logging dnsmasq's image didn't
+    # embedded resolver first (container name resolution), AdGuard public
+    # DNS (94.140.14.14 / 94.140.15.15) fallback - blocks ads/trackers on
+    # public lookups. `log` gives per-query logging dnsmasq's image didn't
     # surface - the point of this migration.
     configs:
       - source: corefile
@@ -30,7 +31,7 @@ configs:
   corefile:
     content: |
       . {
-          forward . 127.0.0.11 1.1.1.1
+          forward . 127.0.0.11 94.140.14.14 94.140.15.15
           log
           errors
           health
